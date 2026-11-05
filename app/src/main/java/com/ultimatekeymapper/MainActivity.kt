@@ -53,7 +53,7 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun dispatchGenericMotionEvent(event: MotionEvent): Boolean {
-        if (::store.isInitialized && event.source and InputDevice.SOURCE_MOUSE == InputDevice.SOURCE_MOUSE) {
+        if (::store.isInitialized && (event.source and InputDevice.SOURCE_MOUSE) == InputDevice.SOURCE_MOUSE) {
             if (event.action == MotionEvent.ACTION_SCROLL) {
                 addLog("Mouse wheel: ${event.getAxisValue(MotionEvent.AXIS_VSCROLL)}")
             } else if (event.action == MotionEvent.ACTION_HOVER_MOVE || event.action == MotionEvent.ACTION_MOVE) {
@@ -73,9 +73,9 @@ class MainActivity : ComponentActivity() {
     private fun connectedInputDevices(): List<String> = InputDevice.getDeviceIds().mapNotNull { id ->
         val device = InputDevice.getDevice(id) ?: return@mapNotNull null
         val type = when {
-            device.sources and InputDevice.SOURCE_KEYBOARD == InputDevice.SOURCE_KEYBOARD -> "Keyboard"
-            device.sources and InputDevice.SOURCE_MOUSE == InputDevice.SOURCE_MOUSE -> "Mouse"
-            device.sources and InputDevice.SOURCE_GAMEPAD == InputDevice.SOURCE_GAMEPAD -> "Gamepad"
+            (device.sources and InputDevice.SOURCE_KEYBOARD) == InputDevice.SOURCE_KEYBOARD -> "Keyboard"
+            (device.sources and InputDevice.SOURCE_MOUSE) == InputDevice.SOURCE_MOUSE -> "Mouse"
+            (device.sources and InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD -> "Gamepad"
             else -> "Input device"
         }
         "$type • ${device.name} • ID $id"
@@ -84,6 +84,7 @@ class MainActivity : ComponentActivity() {
 
 private data class Mapping(val key: String, val x: Float, val y: Float)
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun KeyMapperApp(
     inputLog: List<String>,
